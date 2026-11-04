@@ -1,0 +1,1067 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="SE_Project.SiteMaster" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%: Page.Title %> | TEXTILES</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <style>
+        :root {
+            --textiles-green: #08783c;
+            --textiles-green-dark: #075c2e;
+            --textiles-green-light: #0a9e4f;
+            --textiles-dark: #20251f;
+            --textiles-cream: #fbf9f7;
+            --textiles-border: #e9e5e1;
+            --textiles-muted: #77766f;
+            --textiles-gold: #c9a227;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+            --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            background: var(--textiles-cream);
+            color: var(--textiles-dark);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(8, 120, 60, 0.5); }
+            50%      { box-shadow: 0 0 0 10px rgba(8, 120, 60, 0); }
+        }
+
+        @keyframes shimmer {
+            0%   { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-4px); }
+        }
+
+        @keyframes rotateIn {
+            from { transform: rotate(-90deg); opacity: 0; }
+            to   { transform: rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes underlineSlide {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+
+        @keyframes scrollLine {
+            0%   { transform: translateY(-100%); opacity: 0; }
+            50%  { opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+
+        /* ============ HEADER ============ */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--textiles-border);
+            animation: fadeInDown 0.5s ease both;
+            transition: box-shadow var(--transition-smooth);
+        }
+
+        .site-header.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Top announcement bar */
+        .site-announcement {
+            background: linear-gradient(90deg, var(--textiles-green) 0%, var(--textiles-green-light) 50%, var(--textiles-green) 100%);
+            background-size: 200% auto;
+            color: #fff;
+            text-align: center;
+            padding: 9px 5%;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            animation: shimmer 4s linear infinite;
+            overflow: hidden;
+        }
+
+        .site-announcement span {
+            display: inline-block;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .site-announcement .highlight {
+            color: var(--textiles-gold);
+            font-weight: 800;
+        }
+
+        .site-header-inner {
+            max-width: 1450px;
+            min-height: 84px;
+            margin: auto;
+            padding: 15px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+        /* Logo */
+        .site-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--textiles-green);
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            transition: transform var(--transition-bounce);
+        }
+
+        .site-logo:hover {
+            transform: scale(1.04);
+        }
+
+        .site-logo-icon {
+            display: grid;
+            place-items: center;
+            width: 39px;
+            height: 39px;
+            background: linear-gradient(135deg, var(--textiles-green) 0%, var(--textiles-green-light) 100%);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 22px;
+            box-shadow: 0 4px 12px rgba(8, 120, 60, 0.3);
+            transition: transform var(--transition-bounce), box-shadow var(--transition-smooth);
+            position: relative;
+        }
+
+        .site-logo:hover .site-logo-icon {
+            transform: rotate(-8deg) scale(1.08);
+            box-shadow: 0 6px 18px rgba(8, 120, 60, 0.45);
+        }
+
+        .site-logo-icon::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 13px;
+            border: 2px solid var(--textiles-green);
+            opacity: 0;
+            transition: opacity var(--transition-smooth), transform var(--transition-smooth);
+        }
+
+        .site-logo:hover .site-logo-icon::after {
+            opacity: 0.4;
+            transform: scale(1.15);
+        }
+
+        /* Navigation */
+        .site-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .site-nav a {
+            position: relative;
+            color: #454941;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .site-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 12px;
+            right: 12px;
+            height: 2px;
+            background: var(--textiles-green);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform var(--transition-smooth);
+        }
+
+        .site-nav a:hover {
+            color: var(--textiles-green);
+            background: rgba(8, 120, 60, 0.05);
+        }
+
+        .site-nav a:hover::after,
+        .site-nav a.active::after {
+            transform: scaleX(1);
+        }
+
+        .site-nav a.active {
+            color: var(--textiles-green);
+        }
+
+        /* Header actions */
+        .site-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .site-search {
+            width: 190px;
+            min-width: 0;
+            height: 40px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            border: 1px solid #deded8;
+            border-radius: 7px;
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast), width var(--transition-smooth);
+        }
+
+        .site-search:focus-within {
+            border-color: var(--textiles-green);
+            box-shadow: 0 0 0 4px rgba(8, 120, 60, 0.1);
+            width: 230px;
+        }
+
+        .site-search span {
+            color: var(--textiles-green);
+            font-size: 19px;
+            transition: transform var(--transition-fast);
+        }
+
+        .site-search:focus-within span {
+            transform: scale(1.1);
+        }
+
+        .site-search input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            font-size: 12px;
+            color: var(--textiles-dark);
+        }
+
+        .site-action {
+            position: relative;
+            min-height: 40px;
+            padding: 0 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid #dcded7;
+            border-radius: 8px;
+            background: #fff;
+            color: var(--textiles-dark);
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all var(--transition-fast);
+        }
+
+        .site-action::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(circle at center, rgba(8, 120, 60, 0.08) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+            pointer-events: none;
+        }
+
+        .site-action:hover::before {
+            opacity: 1;
+        }
+
+        .site-action:hover {
+            border-color: var(--textiles-green);
+            color: var(--textiles-green);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .site-action:active {
+            transform: translateY(0);
+        }
+
+        .site-action-icon {
+            font-size: 17px;
+            transition: transform var(--transition-bounce);
+        }
+
+        .site-action:hover .site-action-icon {
+            transform: scale(1.12) rotate(-5deg);
+        }
+
+        .site-profile {
+            border-color: var(--textiles-green);
+            background: linear-gradient(135deg, var(--textiles-green) 0%, var(--textiles-green-light) 100%);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(8, 120, 60, 0.25);
+        }
+
+        .site-profile:hover {
+            background: linear-gradient(135deg, var(--textiles-green-dark) 0%, var(--textiles-green) 100%);
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(8, 120, 60, 0.4);
+        }
+
+        /* Cart & Wishlist badge - crisp, unclipped floating badge */
+        .site-cart-badge {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #d97706;
+            color: #ffffff !important;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+            border-radius: 10px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* ============ MAIN ============ */
+        .site-main {
+            min-height: 60vh;
+            animation: fadeInUp 0.5s ease 0.1s both;
+        }
+
+        /* ============ FOOTER ============ */
+        .site-footer {
+            position: relative;
+            margin-top: 60px;
+            padding: 48px 5% 0;
+            background: linear-gradient(180deg, #ffffff 0%, #faf8f6 100%);
+            border-top: 1px solid var(--textiles-border);
+            overflow: hidden;
+        }
+
+        .site-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--textiles-green), var(--textiles-green-light), var(--textiles-gold), var(--textiles-green-light), var(--textiles-green));
+            background-size: 200% auto;
+            animation: shimmer 5s linear infinite;
+        }
+
+        .site-footer-inner {
+            max-width: 1350px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.3fr 1.2fr;
+            gap: 40px;
+        }
+
+        .site-footer-brand p {
+            max-width: 310px;
+            margin-top: 15px;
+            color: var(--textiles-muted);
+            font-size: 12.5px;
+            line-height: 1.9;
+        }
+
+        .site-footer h3 {
+            position: relative;
+            margin: 4px 0 20px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            padding-bottom: 10px;
+        }
+
+        .site-footer h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 28px;
+            height: 2px;
+            background: var(--textiles-green);
+            border-radius: 2px;
+            transition: width var(--transition-smooth);
+        }
+
+        .site-footer-links:hover h3::after {
+            width: 46px;
+        }
+
+        .site-footer-links a {
+            position: relative;
+            display: block;
+            width: fit-content;
+            margin-bottom: 13px;
+            color: #66665f;
+            font-size: 12.5px;
+            transition: color var(--transition-fast), transform var(--transition-fast), padding-left var(--transition-fast);
+        }
+
+        .site-footer-links a::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            opacity: 0;
+            color: var(--textiles-green);
+            font-weight: 800;
+            transition: opacity var(--transition-fast), transform var(--transition-fast);
+        }
+
+        .site-footer-links a:hover {
+            color: var(--textiles-green);
+            transform: translateX(2px);
+            padding-left: 12px;
+        }
+
+        .site-footer-links a:hover::before {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Newsletter in footer */
+        .site-newsletter {
+            margin-top: 18px;
+        }
+
+        .site-newsletter-form {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            max-width: 280px;
+        }
+
+        .site-newsletter-form input {
+            flex: 1;
+            min-width: 0;
+            height: 38px;
+            padding: 0 12px;
+            border: 1px solid var(--textiles-border);
+            border-radius: 7px;
+            font-size: 12px;
+            outline: none;
+            transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+        }
+
+        .site-newsletter-form input:focus {
+            border-color: var(--textiles-green);
+            box-shadow: 0 0 0 3px rgba(8, 120, 60, 0.1);
+        }
+
+        .site-newsletter-form button {
+            height: 38px;
+            padding: 0 14px;
+            border: 0;
+            border-radius: 7px;
+            background: var(--textiles-green);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .site-newsletter-form button:hover {
+            background: var(--textiles-green-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(8, 120, 60, 0.3);
+        }
+
+        /* Social icons */
+        .site-social {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .site-social a {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid var(--textiles-border);
+            color: var(--textiles-muted);
+            font-size: 14px;
+            transition: all var(--transition-bounce);
+        }
+
+        .site-social a:hover {
+            background: var(--textiles-green);
+            border-color: var(--textiles-green);
+            color: #fff;
+            transform: translateY(-4px) rotate(8deg);
+            box-shadow: 0 6px 14px rgba(8, 120, 60, 0.35);
+        }
+
+        /* Payment strip */
+        .site-payments {
+            max-width: 1350px;
+            margin: 32px auto 0;
+            padding: 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-top: 1px dashed var(--textiles-border);
+            flex-wrap: wrap;
+        }
+
+        .site-payments-label {
+            font-size: 11px;
+            color: var(--textiles-muted);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .site-payments-icons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .site-payment-chip {
+            padding: 5px 10px;
+            background: #fff;
+            border: 1px solid var(--textiles-border);
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #555;
+            letter-spacing: 0.3px;
+            transition: all var(--transition-fast);
+        }
+
+        .site-payment-chip:hover {
+            border-color: var(--textiles-green);
+            color: var(--textiles-green);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .site-footer-bottom {
+            max-width: 1350px;
+            margin: 0 auto;
+            padding: 20px 0;
+            border-top: 1px solid var(--textiles-border);
+            color: var(--textiles-muted);
+            text-align: center;
+            font-size: 11.5px;
+            line-height: 1.9;
+        }
+
+        .site-footer-bottom strong {
+            color: var(--textiles-green);
+        }
+
+        /* ============ BACK TO TOP ============ */
+        .back-to-top {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            background: var(--textiles-green);
+            color: #fff;
+            border: 0;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(8, 120, 60, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.8);
+            transition: all var(--transition-smooth);
+            z-index: 90;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .back-to-top:hover {
+            background: var(--textiles-green-dark);
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 10px 26px rgba(8, 120, 60, 0.5);
+        }
+
+        /* Scroll progress bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--textiles-green), var(--textiles-gold));
+            z-index: 200;
+            transition: width 0.1s linear;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1100px) {
+            .site-header-inner {
+                gap: 15px;
+            }
+
+            .site-nav {
+                gap: 2px;
+            }
+
+            .site-search {
+                width: 160px;
+            }
+
+            .site-footer-inner {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .site-announcement {
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+
+            .site-header-inner {
+                padding: 14px 16px;
+                gap: 13px;
+            }
+
+            .site-logo {
+                font-size: 21px;
+            }
+
+            .site-logo-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 19px;
+            }
+
+            .site-header-actions {
+                margin-left: auto;
+            }
+
+            .site-nav {
+                order: 3;
+                width: 100%;
+                justify-content: space-between;
+                gap: 4px;
+            }
+
+            .site-nav a {
+                font-size: 12px;
+                padding: 6px 8px;
+            }
+
+            .site-search {
+                order: 4;
+                width: 100%;
+            }
+
+            .site-search:focus-within {
+                width: 100%;
+            }
+
+            .site-action {
+                min-height: 37px;
+                padding: 0 9px;
+                font-size: 11px;
+            }
+
+            .site-footer {
+                padding: 32px 18px 0;
+            }
+
+            .site-footer-inner {
+                gap: 28px 18px;
+            }
+
+            .site-payments {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .site-header-inner {
+                gap: 11px;
+            }
+
+            .site-logo {
+                gap: 6px;
+                font-size: 18px;
+            }
+
+            .site-header-actions {
+                gap: 5px;
+            }
+
+            .site-action {
+                padding: 0 7px;
+                gap: 4px;
+                font-size: 10px;
+            }
+
+            .site-nav {
+                flex-wrap: wrap;
+            }
+
+            .site-footer-inner {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .site-footer-brand {
+                grid-column: 1 / -1;
+            }
+
+            .back-to-top {
+                right: 14px;
+                bottom: 14px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+
+        <!-- Scroll progress bar -->
+        <div class="scroll-progress" id="scrollProgress"></div>
+
+        <!-- HEADER -->
+        <header class="site-header" id="siteHeader">
+
+            <!-- Announcement bar -->
+            <div class="site-announcement">
+                <span>
+                    &#10022; Free shipping on orders over <span class="highlight">&#8377;1,999</span> &nbsp;|&nbsp;
+                    Use code <span class="highlight">STYLE10</span> for 10% off &#10022;
+                </span>
+            </div>
+
+            <div class="site-header-inner">
+
+                <a class="site-logo" href="<%= ResolveUrl("~/index.aspx") %>">
+                    <span class="site-logo-icon">T</span>
+                    <span>TEXTILES</span>
+                </a>
+
+                <nav class="site-nav" aria-label="Main navigation">
+                    <a href="<%= ResolveUrl("~/index.aspx") %>">Home</a>
+                    <a href="<%= ResolveUrl("~/products.aspx") %>">Shop</a>
+                    <a href="<%= ResolveUrl("~/category.aspx") %>">Categories</a>
+                    <a href="<%= ResolveUrl("~/index.aspx#new-arrivals") %>">New Arrivals</a>
+                </nav>
+
+                <div class="site-header-actions">
+                    <label class="site-search">
+                        <span aria-hidden="true">&#9906;</span>
+                        <input type="search"
+                               id="siteSearch"
+                               placeholder="Search products..."
+                               aria-label="Search products" />
+                    </label>
+
+                    <a class="site-action"
+                       href="<%= ResolveUrl("~/wishlist.aspx") %>"
+                       aria-label="Wishlist">
+                        <span class="site-action-icon">&#9825;</span>
+                        <span>Wishlist</span>
+                        <span class="site-cart-badge" id="masterWishlistBadge" style="background:var(--textiles-gold); <%= WishlistCount > 0 ? "" : "display:none;" %>"><%: WishlistCount %></span>
+                    </a>
+
+                    <a class="site-action"
+                       href="<%= ResolveUrl("~/cart.aspx") %>"
+                       aria-label="Shopping cart">
+                        <span class="site-action-icon">&#128722;</span>
+                        <span>Cart</span>
+                        <span class="site-cart-badge" id="masterCartBadge" style="<%= CartCount > 0 ? "" : "display:none;" %>"><%: CartCount %></span>
+                    </a>
+
+                    <% if (IsLoggedIn) { %>
+                        <% if (IsAdmin) { %>
+                            <a class="site-action" href="<%= ResolveUrl("~/admin.aspx") %>" title="Admin Panel" style="border: 1px solid var(--textiles-green); background: rgba(8,120,60,0.06); color: var(--textiles-green);">
+                                <span class="site-action-icon">&#9881;</span>
+                                <span>Admin</span>
+                            </a>
+                        <% } else { %>
+                            <a class="site-action site-profile" href="<%= ResolveUrl("~/profile.aspx") %>" title="My Account">
+                                <span class="site-action-icon">&#128100;</span>
+                                <span><%: UserName.Split(' ')[0] %></span>
+                            </a>
+                        <% } %>
+                        
+                    <% } else { %>
+                        <a class="site-action site-profile" href="<%= ResolveUrl("~/login.aspx") %>">
+                            <span class="site-action-icon">&#128100;</span>
+                            <span>Login</span>
+                        </a>
+                    <% } %>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <main class="site-main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="site-footer-inner">
+
+                <div class="site-footer-brand">
+                    <a class="site-logo" href="<%= ResolveUrl("~/index.aspx") %>">
+                        <span class="site-logo-icon">T</span>
+                        <span>TEXTILES</span>
+                    </a>
+
+                    <p>
+                        Men's clothing designed around everyday comfort,
+                        personal style and timeless wardrobes.
+                        Find your style with TEXTILES.
+                    </p>
+
+                    <div class="site-newsletter">
+                        <h3>Stay in the loop</h3>
+                        <div class="site-newsletter-form">
+                            <input type="email" placeholder="Your email address" aria-label="Email address" />
+                            <button type="button">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="site-social" aria-label="Social links">
+                        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <div class="site-footer-links">
+                    <h3>Shop</h3>
+                    <a href="<%= ResolveUrl("~/products.aspx") %>">All Products</a>
+                    <a href="<%= ResolveUrl("~/category.aspx?cat=tshirts") %>">T-Shirts</a>
+                    <a href="<%= ResolveUrl("~/category.aspx?cat=shirts") %>">Shirts</a>
+                    <a href="<%= ResolveUrl("~/category.aspx?cat=jeans") %>">Jeans</a>
+                    <a href="<%= ResolveUrl("~/category.aspx?cat=jackets") %>">Jackets</a>
+                </div>
+
+                <div class="site-footer-links">
+                    <h3>Customer Service</h3>
+                    <a href="<%= ResolveUrl("~/contact.aspx") %>">Contact Us</a>
+                    <a href="<%= ResolveUrl("~/orders.aspx") %>">My Orders</a>
+                    <a href="<%= ResolveUrl("~/shipping.aspx") %>">Shipping Information</a>
+                    <a href="<%= ResolveUrl("~/returns.aspx") %>">Returns</a>
+                    <a href="<%= ResolveUrl("~/faq.aspx") %>">FAQ</a>
+                </div>
+
+                <div class="site-footer-links">
+                    <h3>My Account</h3>
+                    <a href="<%= ResolveUrl("~/login.aspx") %>">Login / Profile</a>
+                    <a href="<%= ResolveUrl("~/register.aspx") %>">Create Account</a>
+                    <a href="<%= ResolveUrl("~/wishlist.aspx") %>">Wishlist</a>
+                    <a href="<%= ResolveUrl("~/cart.aspx") %>">Shopping Cart</a>
+                    <a href="<%= ResolveUrl("~/track.aspx") %>">Track Order</a>
+                </div>
+
+            </div>
+
+            <!-- Payment methods -->
+            <div class="site-payments">
+                <span class="site-payments-label">Secure payments</span>
+                <div class="site-payments-icons">
+                    <span class="site-payment-chip">VISA</span>
+                    <span class="site-payment-chip">MASTERCARD</span>
+                    <span class="site-payment-chip">PAYPAL</span>
+                    <span class="site-payment-chip">APPLE PAY</span>
+                    <span class="site-payment-chip">UPI</span>
+                </div>
+            </div>
+
+            <div class="site-footer-bottom">
+                &copy; <%= DateTime.Now.Year %> <strong>TEXTILES</strong>. All rights reserved.
+                <br />
+                Designed for comfort. Made for your style.
+            </div>
+        </footer>
+
+        <!-- Back to top -->
+        <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
+            &#8593;
+        </button>
+
+    </form>
+
+    <!-- ============ SHARED SCRIPTS ============ -->
+    <script>
+        (function () {
+            'use strict';
+
+            var header = document.getElementById('siteHeader');
+            var progress = document.getElementById('scrollProgress');
+            var backToTop = document.getElementById('backToTop');
+            var navLinks = document.querySelectorAll('.site-nav a');
+
+            /* ---- Scroll: sticky header shadow, progress bar, back to top ---- */
+            function onScroll() {
+                var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+                if (progress) progress.style.width = pct + '%';
+
+                if (header) header.classList.toggle('scrolled', scrollTop > 10);
+
+                if (backToTop) backToTop.classList.toggle('visible', scrollTop > 400);
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+
+            /* ---- Back to top click ---- */
+            if (backToTop) {
+                backToTop.addEventListener('click', function () {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            /* ---- Active nav link highlighting ---- */
+            var current = window.location.pathname.split('/').pop().toLowerCase() || 'index.aspx';
+            navLinks.forEach(function (link) {
+                var href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+                if (href && href === current) link.classList.add('active');
+            });
+
+            /* ---- Search: submit on Enter ---- */
+            var searchInput = document.getElementById('siteSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' && this.value.trim()) {
+                        window.location.href = '<%= ResolveUrl("~/products.aspx") %>?q=' +
+                            encodeURIComponent(this.value.trim());
+                    }
+                });
+            }
+
+            /* ---- Reveal-on-scroll for elements with .reveal ---- */
+            if ('IntersectionObserver' in window) {
+                var io = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            io.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12 });
+                document.querySelectorAll('.reveal').forEach(function(el) { io.observe(el); });
+            }
+
+            window.updateSiteBadges = function(cartCount, wishlistCount) {
+                var cBadge = document.getElementById('masterCartBadge');
+                if (cBadge && cartCount !== undefined) {
+                    cBadge.textContent = cartCount;
+                    cBadge.style.display = cartCount > 0 ? 'inline-flex' : 'none';
+                }
+                var wBadge = document.getElementById('masterWishlistBadge');
+                if (wBadge && wishlistCount !== undefined) {
+                    wBadge.textContent = wishlistCount;
+                    wBadge.style.display = wishlistCount > 0 ? 'inline-flex' : 'none';
+                }
+            };
+        })();
+    </script>
+
+    <style>
+        /* Shared reveal utility for child pages */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .reveal.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+
+</body>
+</html>
